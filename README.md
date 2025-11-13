@@ -130,7 +130,8 @@ The following script was used to perform all operations for Task 2:
       if __name__ == "__main__":
           generate_ecc_keys()
           sign_and_verify_message()
-      Running the script gives the following output:
+      
+Running the script gives the following output:
 
        python ecc.py
       --- Task 2A: Generating ECC Keys ---
