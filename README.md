@@ -264,3 +264,127 @@ Running the script gives following the output:
       -----------------------------------
 
 
+Task 4 
+
+Diffie-Hellman (DH) is a foundational protocol for establishing secure communications over an untrusted network, like the internet. Its primary use is to allow two parties, who have no prior knowledge of each other, to jointly establish a shared secret key. This key can then be used for symmetric encryption (like AES) to secure their conversation. In practice, DH is a critical component of the TLS handshake, the process that secures HTTPS connections. When your browser shows a padlock icon, a DH exchange (or its elliptic curve variant, ECDH) has likely occurred to create a unique, temporary session key for encrypting all the traffic between you and the server. It is also central to secure messaging applications like Signal and WhatsApp, where it's used to establish end-to-end encrypted sessions between users, ensuring that only the participants can read the messages.
+
+The protocol's importance lies in its ability to provide Forward Secrecy. Because the shared session keys are generated on-the-fly and discarded after the session, the compromise of a server's long-term private key does not compromise past encrypted communications. An attacker with a server's stolen key cannot go back and decrypt previously recorded traffic, making DH essential for robust, long-term communication privacy.
+
+In this case I simulated a DH between Alice and Bob, where the following script was used:
+
+      from cryptography.hazmat.primitives.asymmetric import dh
+      from cryptography.hazmat.primitives import serialization
+      
+      
+      def simulate_diffie_hellman():
+      
+          print("--- Diffie-Hellman Key Exchange Simulation ---")
+      
+          parameters = dh.generate_parameters(generator=2, key_size=2048)
+      
+          print("\n--- Alice's Actions ---")
+      
+          alice_private_key = parameters.generate_private_key()
+          print("Alice has generated her private key.")
+      
+          alice_public_key = alice_private_key.public_key()
+          print("Alice computes her public key from her private key.")
+      
+          alice_public_pem = alice_public_key.public_bytes(
+              encoding=serialization.Encoding.PEM,
+              format=serialization.PublicFormat.SubjectPublicKeyInfo
+          )
+          print("\nAlice’s Public Key (to be sent to Bob):")
+          print(alice_public_pem.decode())
+      
+          print("\n--- Bob's Actions ---")
+      
+          bob_private_key = parameters.generate_private_key()
+          print("Bob has generated his private key.")
+      
+          bob_public_key = bob_private_key.public_key()
+          print("Bob computes his public key from his private key.")
+      
+          bob_public_pem = bob_public_key.public_bytes(
+              encoding=serialization.Encoding.PEM,
+              format=serialization.PublicFormat.SubjectPublicKeyInfo
+          )
+          print("\nBob’s Public Key (to be sent to Alice):")
+          print(bob_public_pem.decode())
+      
+          alice_shared_key = alice_private_key.exchange(bob_public_key)
+          print("\nAlice has derived the shared secret.")
+      
+          bob_shared_key = bob_private_key.exchange(alice_public_key)
+          print("Bob has derived the shared secret.")
+      
+          print("\n--- Verification ---")
+          print("Shared Secret (Alice's side):", alice_shared_key.hex())
+          print("Shared Secret (Bob's side):  ", bob_shared_key.hex())
+      
+          if alice_shared_key == bob_shared_key:
+              print("\nSuccess! Both Alice and Bob have derived the exact same secret key.")
+          else:
+              print("\nFailure! The keys do not match.")
+          print("-" * 35)
+      
+      
+      if __name__ == "__main__":
+          simulate_diffie_hellman()
+
+
+Running the script gave the following output:
+
+       python Diffie-Hellman.py
+      --- Diffie-Hellman Key Exchange Simulation ---
+      
+      --- Alice's Actions ---
+      Alice has generated her private key.
+      Alice computes her public key from her private key.
+      
+      Alice’s Public Key (to be sent to Bob):
+      -----BEGIN PUBLIC KEY-----
+      MIICJDCCARcGCSqGSIb3DQEDATCCAQgCggEBAL+fyGrMfE7FsxNdpWLQDQjzICj+
+      0G6KCZYJcvfeuCJo99xk67s440trOK4ZxMYZ6+AxTBBjolV/7Vt3hFgb/NbkMsQP
+      3VMrbWWE2EdFziJpQBNNFQo/ApepGORTx2RnqaIXc+VvyrAUfALdxTK9G5R2LJIr
+      37d8ygUV8YqZCHlnHsiCIeWoLbRdfIe6CShPmCAb7rqXQS8ibT6y7q/8pVS+0D2S
+      Ajt9O4t5sBFpM2xHW3Zmkm5pFauY9yrfjxI5e1x8we4J5rGE0yAgGN0AG7hKeEkS
+      JaxmUCBN6no1FJwmmLqnSb5jFzICyfhWQ5mcU6DIiWW03H8/Wx0s6hqZfEcCAQID
+      ggEFAAKCAQAUx26RtHICrxh/tPDpIhTN0eSSuY046eGmWJr7de+hpmi/BGWRIzuT
+      Let7aKFnMAv8C2+Q0EDKhtefPkZxNGueJA1gpj9dXblhbgUcupA5hFpULPk49GVG
+      Jpmliz9Zubx1+o6XZ2dM9J4hgQ4Enyb27UmdPGprBuouy81Al+35920iI8H2TGr+
+      HhldxHpGeQVCiPY8vhdc6uCtqNHm34sbAhpar9Af6TniCBA+tKs+q1KsbsOokCDo
+      sk//b0v+VBJJzqRQtKO87lKrtL9bvWklatcIaRKEc/5BrKYkCB79bww/LKRm1f4C
+      vdPd7jhMVbh3sal2ThHhyrF9RdAef2fY
+      -----END PUBLIC KEY-----
+      
+      
+      --- Bob's Actions ---
+      Bob has generated his private key.
+      Bob computes his public key from his private key.
+      
+      Bob’s Public Key (to be sent to Alice):
+      -----BEGIN PUBLIC KEY-----
+      MIICJTCCARcGCSqGSIb3DQEDATCCAQgCggEBAL+fyGrMfE7FsxNdpWLQDQjzICj+
+      0G6KCZYJcvfeuCJo99xk67s440trOK4ZxMYZ6+AxTBBjolV/7Vt3hFgb/NbkMsQP
+      3VMrbWWE2EdFziJpQBNNFQo/ApepGORTx2RnqaIXc+VvyrAUfALdxTK9G5R2LJIr
+      37d8ygUV8YqZCHlnHsiCIeWoLbRdfIe6CShPmCAb7rqXQS8ibT6y7q/8pVS+0D2S
+      Ajt9O4t5sBFpM2xHW3Zmkm5pFauY9yrfjxI5e1x8we4J5rGE0yAgGN0AG7hKeEkS
+      JaxmUCBN6no1FJwmmLqnSb5jFzICyfhWQ5mcU6DIiWW03H8/Wx0s6hqZfEcCAQID
+      ggEGAAKCAQEAgeqRQFzctVuBHJq5K3txwlrNxhBTvXoOwnobGNpUBzhTE9ANHnd2
+      xPatpKqNC3F4NS2jNo3Y1Vgq0p+dhlqNXPu+i9lui3viEk6gBhHObRCwkAQ0B0AZ
+      Ff0sl2Ktn6IZHLltCfIjucQXVfFRsf3OsK0jQlA+37PK7SMUsqFtdGk8hMX6xNqp
+      14I2jtNNHIZC6PNoVU5xTnYlBmwG94wFQOr+LetZGY0/tOY+eujTCwpprMLNRyb8
+      HL2ispOz8/wz/4fICTBMtPo6AjDCR/6bpDUZR85nHMUlRxSj2G88QsAPxs2hPXUJ
+      1PPtYRsgFhrj0ZvC/7n8P4PKh6O4/K/OXg==
+      -----END PUBLIC KEY-----
+      
+      
+      Alice has derived the shared secret.
+      Bob has derived the shared secret.
+      
+      --- Verification ---
+      Shared Secret (Alice's side): 191f49a512e98663c65f5e47aa16714e4905dafc9c367dfa59e8a290e156c445a7198220242ac04b073edbcf18c2bc280d1957e7a5b6ccdcf2562703b3c3e61cc34f567239cc1fbde2e25e0cb4c7cc26042376adfce48c6cd0d0a1503649d820ef8d4b9bb86931713059cf11e19e52ee41f02f1bc21f7906a2996b4d34bfdc277ee3b71c3fbb7b2722eded7f9cebc695d3f55f128fbdcafd235dc60449ba7d339791c34e921d90343c8c5b1b86e1cbd0dd34bb77e18179189b08e846d9efd08731d62f8ec99912ac1e1fb54a9436342c098f378ff756ab7f18831ef2fa65fa73f8f11c6b6e7ae6fa17eb5c94bc2234d989a08cea4ee08ec3a7c525c2e79afcb4
+      Shared Secret (Bob's side):   191f49a512e98663c65f5e47aa16714e4905dafc9c367dfa59e8a290e156c445a7198220242ac04b073edbcf18c2bc280d1957e7a5b6ccdcf2562703b3c3e61cc34f567239cc1fbde2e25e0cb4c7cc26042376adfce48c6cd0d0a1503649d820ef8d4b9bb86931713059cf11e19e52ee41f02f1bc21f7906a2996b4d34bfdc277ee3b71c3fbb7b2722eded7f9cebc695d3f55f128fbdcafd235dc60449ba7d339791c34e921d90343c8c5b1b86e1cbd0dd34bb77e18179189b08e846d9efd08731d62f8ec99912ac1e1fb54a9436342c098f378ff756ab7f18831ef2fa65fa73f8f11c6b6e7ae6fa17eb5c94bc2234d989a08cea4ee08ec3a7c525c2e79afcb4
+      
+      Success! Both Alice and Bob have derived the exact same secret key.
