@@ -131,6 +131,23 @@ if __name__ == "__main__":
     generate_ecc_keys()
     sign_and_verify_message()
 
+Running the script gives the following output:
+
+ python ecc.py
+--- Task 2A: Generating ECC Keys ---
+Private key generated successfully.
+Public key derived successfully.
+Private key saved to ecc_private_key.pem
+Public key saved to ecc_public_key.pem
+-----------------------------------
+
+--- Task 2B: Signing and Verifying Message ---
+Message to sign: 'Elliptic Curves are efficient.'
+Signature (in hex): 3045022100d4be5623818f41be3be755cfb173b9f6b6abd81ad0c349f010474a7dc1d562c202205d919dec080ce1e96bd699597ebe701e4ba388015f31b62dbbc70c1082ba3866
+Signature saved to message.sig
+
+Verification successful: The signature is valid.
+-----------------------------------
 
 Task 3: Hashing & HMAC
 
