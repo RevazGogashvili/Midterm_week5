@@ -6,7 +6,7 @@ from cryptography.exceptions import InvalidSignature
 
 def generate_ecc_keys():
 
-    print("--- Task 2A: Generating ECC Keys ---")
+    print("--- Generating ECC Keys ---")
 
     private_key = ec.generate_private_key(ec.SECP256R1())
     print("Private key generated successfully.")
@@ -36,7 +36,7 @@ def generate_ecc_keys():
 
 def sign_and_verify_message():
 
-    print("--- Task 2B: Signing and Verifying Message ---")
+    print("--- Signing and Verifying Message ---")
 
     message = b"Elliptic Curves are efficient."
     with open("ecc.txt", "wb") as f:
