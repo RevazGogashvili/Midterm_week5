@@ -133,20 +133,22 @@ The following script was used to perform all operations for Task 2:
       
 Running the script gives the following output:
 
-       python ecc.py
-      --- Task 2A: Generating ECC Keys ---
+             --- Generating ECC Keys ---
       Private key generated successfully.
       Public key derived successfully.
       Private key saved to ecc_private_key.pem
       Public key saved to ecc_public_key.pem
       -----------------------------------
-
-      --- Task 2B: Signing and Verifying Message ---
+      
+      --- Signing and Verifying Message ---
       Message to sign: 'Elliptic Curves are efficient.'
-      Signature (in hex): 3045022100d4be5623818f41be3be755cfb173b9f6b6abd81ad0c349f010474a7dc1d562c202205d919dec080ce1e96bd699597ebe701e4ba388015f31b62dbbc70c1082ba3866
+      Signature (in hex): 304402202556237b56dfd09f243774230dddd23682a13089ce2f64af3d008be49e08fa80022015acf56762b7c196ab21d4b1daf6000b37b8dcb246d397c8216ad79baf0f4610
       Signature saved to message.sig
       
       Verification successful: The signature is valid.
+      -----------------------------------
+      
+      Process finished with exit code 0
 
 Task 3: Hashing & HMAC
 
